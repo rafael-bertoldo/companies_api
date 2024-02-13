@@ -1,0 +1,342 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Companies API",
+    "description": "A Simple company API",
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "companies",
+      "description": "all companies routes"
+    }
+  ],
+  "paths": {
+    "/companies": {
+      "post": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Add a new company to the database",
+        "description": "Add a new company to the database",
+        "operationId": "addCompany",
+        "requestBody": {
+          "description": "Create a new company in the database",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Company"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "message": "CNPJ já cadastrado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/companies?start=1&limit=5&sort=CNPJ&dir=asc": {
+      "get": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Get all companies",
+        "description": "Returns all companies in database",
+        "operationId": "getCompanies",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "page number you want to view"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "number of results to search for"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "which column should be sorted"
+          },
+          {
+            "in": "query",
+            "name": "dir",
+            "schema": {
+              "type": "string"
+            },
+            "description": "which order should it follow, asc or desc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": 1,
+                        "CNPJ": "12345678901",
+                        "nome_razao": "TechData Solutions Ltda",
+                        "nome_fantasia": "APIConnect",
+                        "CNAE": "6201501"
+                      },
+                      {
+                        "id": 2,
+                        "CNPJ": "12345678902",
+                        "nome_razao": "DataBridge Tecnologia Ltda",
+                        "nome_fantasia": "BridgeAPI",
+                        "CNAE": "6201501"
+                      },
+                      {
+                        "id": 3,
+                        "CNPJ": "12345678903",
+                        "nome_razao": "Inovação Digital S.A",
+                        "nome_fantasia": "DigitalLink API",
+                        "CNAE": "6201501"
+                      },
+                      {
+                        "id": 4,
+                        "CNPJ": "12345678904",
+                        "nome_razao": "ConexãoTech Soluções Ltda",
+                        "nome_fantasia": "ConnectAPI",
+                        "CNAE": "6201501"
+                      },
+                      {
+                        "id": 5,
+                        "CNPJ": "12345678905",
+                        "nome_razao": "TecnoLogic Sistemas Ltda",
+                        "nome_fantasia": "LogicAPI",
+                        "CNAE": "6201501"
+                      }
+                    ],
+                    "pagina_anterior": null,
+                    "proxima_pagina": "http://127.0.0.1:5000/api/companies?start=2&limit=5"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/companies/{companyCNPJ}": {
+      "patch": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Update company by CNPJ",
+        "description": "Update company by CNPJ",
+        "operationId": "updateCompanyByCNPJ",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyCNPJ",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Update company in database",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompany"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "message": "Dados atualizados com sucesso."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "message": "Apenas as chave 'nome_fantasia' e 'CNAE' podem ser atualizadas."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "message": "CNPJ não encontrado, por favor tente novamente."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Update company by CNPJ",
+        "description": "Update company by CNPJ",
+        "operationId": "updateCompanyByCNPJ",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyCNPJ",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "message": "CNPJ não encontrado, por favor tente novamente."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Company": {
+        "required": [
+          "CNPJ",
+          "nome_razao",
+          "nome_fantasia",
+          "CNAE"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "CNPJ": {
+            "type": "string",
+            "example": "12345678901"
+          },
+          "nome_razao": {
+            "type": "string",
+            "example": "TechData Solutions Ltda"
+          },
+          "nome_fantasia": {
+            "type": "string",
+            "example": "APIConnect"
+          },
+          "CNAE": {
+            "type": "string",
+            "example": "6201501"
+          }
+        },
+        "xml": {
+          "name": "pet"
+        }
+      },
+      "UpdateCompany": {
+        "type": "object",
+        "properties": {
+          "nome_fantasia": {
+            "type": "string",
+            "example": "Connect API 2.0"
+          },
+          "CNAE": {
+            "type": "string",
+            "example": "6201502"
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "Company": {
+        "description": "Company object that needs to be added to the store",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Company"
+            }
+          }
+        }
+      }
+    }
+  }
+}
